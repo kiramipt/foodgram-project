@@ -128,3 +128,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/api/migrations/
+/static/ingredients/
+/recipes/migrations/
