@@ -131,3 +131,4 @@ dmypy.json
 /api/migrations/
 /static/ingredients/
 /recipes/migrations/
+/media/image/
