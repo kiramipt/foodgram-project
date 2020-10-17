@@ -24,7 +24,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.title
+        return self.slug
 
 
 class Recipe(models.Model):
