@@ -132,3 +132,4 @@ dmypy.json
 /static/ingredients/
 /recipes/migrations/
 /media/image/
+/media/cache/

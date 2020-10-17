@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 {% endblock %}
 
-{% block nav %}
-{% include 'nav.html' with index=True %}
-{% endblock %}
-
 {% block content %}
     <main class="main container">
 
@@ -46,10 +42,6 @@
                                     style="color: black">{{ recipe.author.get_full_name }}</a></p>
                         </div>
                     </div>
-    {#                <div class="card__footer">#}
-    {#                    {% include 'shop_button.html' %}#}
-    {#                    {% include 'star_button.html' %}#}
-    {#                </div>#}
                 </div>
             {% endfor %}
         </div>
@@ -59,9 +51,6 @@
         {% endif %}
     </main>
 
-    <footer class="footer">
-        {% include 'footer.html' %}
-    </footer>
 {% endblock %}
 
 {% block js %}
