@@ -15,10 +15,15 @@ class Ingredient(models.Model):
 class IngredientAmount(models.Model):
     amount = models.IntegerField()
     ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, related_name='ingredient_amount')
 
 
 class Tag(models.Model):
+    choices = (
+        ('breakfast', 'Завтрак'),
+        ('lunch', 'Обед'),
+        ('dinner', 'Ужин')
+    )
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     color = models.CharField(max_length=255)
