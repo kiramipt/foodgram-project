@@ -85,6 +85,7 @@ def recipe_edit_page(request, username, recipe_id):
             form.save()
             recipe.ingredient_amount.all().delete()
 
+
             ingredients = get_ingredients(request)
             for title, amount in ingredients.items():
                 ingredient = get_object_or_404(Ingredient, title=title)
@@ -93,10 +94,10 @@ def recipe_edit_page(request, username, recipe_id):
 
             return redirect('recipe_view_page', username=recipe.author, recipe_id=recipe.pk)
 
-    else:
-        form = RecipeForm(instance=recipe)
+    form = RecipeForm(instance=recipe)
+    ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
 
-    return render(request, 'recipe_edit_page.html', {'form': form, 'recipe': recipe})
+    return render(request, 'recipe_edit_page.html', {'form': form, 'recipe': recipe, 'ingredients': ingredients})
 
 
 @login_required

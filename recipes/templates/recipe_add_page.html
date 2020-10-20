@@ -68,7 +68,7 @@
                             <div class="form__dropdown-items"></div>
                         </div>
                         <input type="number" id="cantidad" class="form__input" min="0">
-                        <label for="cantidad" class="form__label" id="cantidadVal">{{ form.ingredient.units }}</label>
+                        <label for="cantidad" class="form__label" id="cantidadVal">{{ form.ingredient.unit }}</label>
                     </div>
                     <div class="form__field-group-ingredientes-container">
                     </div>
@@ -104,12 +104,12 @@
             <div class="form__group">
                 <span class="form__label">{{ form.image.label }}</span>
                 <div class="form__field-group">
-                    {{ form.image }}
+                    {{ form.image|addclass:"form__file-button" }}
                     {% if form.errors %}
-                    {% for error in field.errors %}
-                        <span class="form__error">{{ error|escape }}</span>
-                    {% endfor %}
-                {% endif %}
+                        {% for error in field.errors %}
+                            <span class="form__error">{{ error|escape }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
 
@@ -122,7 +122,6 @@
     </div>
 
 {% endblock %}
-
 
 {% block js %}
     <script src="{% static 'js/config/config.js' %}"></script>
