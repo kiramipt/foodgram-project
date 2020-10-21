@@ -34,26 +34,38 @@ def index(request):
     })
 
 
-def user_page(request, username):
-    author = get_object_or_404(User, username=username)
-    # tags, tags_filter = tag_collect(request)
-    # if tags_filter:
-    #     recipes = Recipe.objects.filter(tags_filter).filter(
-    #         author_id=author.id).all()
-    # else:
-    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
+@login_required
+def subscription(request):
+    user = request.user
+    authors = User.objects.filter(
+        following__follower=user).prefetch_related("recipe_author")
 
+    paginator = Paginator(authors, 6)
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
+
+    return render(request, 'subscription.html', {
+        'page': page,
+        'paginator': paginator
+    })
+
+
+def user_recipe_view_page(request, username):
+    author = get_object_or_404(User, username=username)
+    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
     recipes = Recipe.objects.filter(author_id=author.id)
 
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
-    return render(request, 'user_page.html', {
+    tags_all = Tag.objects.all()
+
+    return render(request, 'user_recipe_view_page.html', {
         'page': page,
         'paginator': paginator,
-        'tags': tags_selected,
-        'author': author
+        'author': author,
+        'tags': tags_all,
     })
 
 
