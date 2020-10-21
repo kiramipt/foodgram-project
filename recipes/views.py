@@ -50,6 +50,28 @@ def subscription(request):
     })
 
 
+@login_required
+def favorites(request):
+    user = request.user
+    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
+
+    recipes = Recipe.objects.filter(
+        favorite_recipe__user=user
+    ).all()
+
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
+
+    tags_all = Tag.objects.all()
+
+    return render(request, 'favorites.html', {
+        'page': page,
+        'paginator': paginator,
+        'tags': tags_all
+    })
+
+
 def user_recipe_view_page(request, username):
     author = get_object_or_404(User, username=username)
     tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])

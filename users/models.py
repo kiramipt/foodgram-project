@@ -14,7 +14,6 @@ class Follow(models.Model):
         unique_together = ('follower', 'following')
 
 
-# class Favorites(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_subscriber")
-#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="favorite_recipe")
-
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_user")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="favorite_recipe")
