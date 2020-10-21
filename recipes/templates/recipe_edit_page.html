@@ -123,7 +123,7 @@
 
             <div class="form__footer">
                 <button class="button button_style_blue" type="submit" id="submit-button">Сохранить рецепт</button>
-                <a style="margin-left: 2.5em" href="{% url 'recipe_view_page' recipe.author.username recipe.id %}" class="form__ingredient-link">Удалить</a>
+                <a style="margin-left: 2.5em" href="{% url 'recipe_remove' recipe.author.username recipe.id %}" class="form__ingredient-link">Удалить</a>
             </div>
 
         </form>
