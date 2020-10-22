@@ -12,7 +12,7 @@
 {% block content %}
 
     {% csrf_token %}
-    <div class="single-card" data-id="{{ recipe.pk }}" second-id="{{ recipe.author.pk }}">
+    <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
 
         {% load thumbnail %}
             {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
@@ -93,7 +93,8 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Purchases.js' %}"></script>
     <script src="{% static 'js/components/Favorites.js' %}"></script>
     <script src="{% static 'js/components/Subscribe.js' %}"></script>
     <script src="{% static 'js/components/MainCards.js' %}"></script>

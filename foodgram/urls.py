@@ -8,11 +8,11 @@ urlpatterns = [
     # path("about/", include("django.contrib.flatpages.urls")),
     # path("about-author/", views.flatpage, {"url": "/about-author/"}, name="author"),
     # path("about-spec/", views.flatpage, {"url": "/about-spec/"}, name="spec"),
+    path('', include('api.urls')),
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
     path('', include('recipes.urls')),
-    path('', include('api.urls')),
 ]
 
 if settings.DEBUG:

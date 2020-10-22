@@ -1,10 +1,37 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import redirect
-from recipes.models import Recipe
+from recipes.models import Recipe, User
+from users.models import Follow
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404
 
 
+@login_required
 def recipe_remove(request, username, recipe_id):
     if request.user.username == username:
         Recipe.objects.filter(id=recipe_id).delete()
         return redirect("user_recipe_view_page", username)
     else:
         return redirect("recipe_view_page", username, recipe_id)
+
+
+@require_http_methods(["POST"])
+def add_subscription(request):
+    print('here')
+    following = get_object_or_404(
+        User,
+        pk=json.loads(request.body)['id']
+    )
+    Follow.objects.get_or_create(follower=request.user, following=following)
+    return JsonResponse({'success': True})
+
+
+@require_http_methods(["DELETE"])
+def remove_subscription(request, author_id):
+    subscription = get_object_or_404(Follow, follower=request.user, following__pk=author_id)
+    subscription.delete()
+    return JsonResponse({'success': True})
+
