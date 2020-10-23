@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from recipes.models import Recipe, User
-from users.models import Follow
+from users.models import Follow, Favorite
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
@@ -18,6 +18,7 @@ def recipe_remove(request, username, recipe_id):
         return redirect("recipe_view_page", username, recipe_id)
 
 
+@login_required
 @require_http_methods(["POST"])
 def add_subscription(request):
     print('here')
@@ -29,9 +30,26 @@ def add_subscription(request):
     return JsonResponse({'success': True})
 
 
+@login_required
 @require_http_methods(["DELETE"])
 def remove_subscription(request, author_id):
     subscription = get_object_or_404(Follow, follower=request.user, following__pk=author_id)
     subscription.delete()
+    return JsonResponse({'success': True})
+
+
+@login_required
+@require_http_methods(['POST'])
+def add_favorites(request):
+    recipe = get_object_or_404(Recipe, pk=json.loads(request.body)['id'])
+    Favorite.objects.get_or_create(user=request.user, recipe=recipe)
+    return JsonResponse({'success': True})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def remove_favorites(request, recipe_id):
+    favorite_recipe = get_object_or_404(Favorite, user=request.user, recipe__pk=recipe_id)
+    favorite_recipe.delete()
     return JsonResponse({'success': True})
 

@@ -12,7 +12,7 @@
 {% block content %}
 
     {% csrf_token %}
-    <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
+    <div class="single-card" data-id="{{ recipe.pk }}" data-author="{{ author.id }}">
 
         {% load thumbnail %}
             {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
@@ -25,7 +25,10 @@
                 <h1 class="single-card__title">{{ recipe.title }}</h1>
                 {% if user.is_authenticated %}
                     <div class="single-card__favorite">
-                        <button class="button button_style_none" name="favorites" {% if recipe.pk not in favorites_recipes %}data-out{% endif %}><span class="icon-favorite icon-favorite_big {% if recipe.pk in favorites_recipes %}icon-favorite_active{% endif %}"></span></button>
+                        <button class="button button_style_none" name="favorites" {% if recipe.id not in favorites %}data-out{% endif %}>
+                            <span class="icon-favorite icon-favorite_big {% if recipe.id in favorites %}icon-favorite_active{% endif %}">
+                            </span>
+                        </button>
                         <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
                     </div>
                 {% endif %}

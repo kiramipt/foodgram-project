@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from .models import Recipe, IngredientAmount, Ingredient
 from django.contrib.auth.decorators import login_required
 from .forms import RecipeForm
-from .utils import get_ingredients
+from .utils import get_ingredients, get_favorites
 
 User = get_user_model()
 
@@ -96,11 +96,14 @@ def recipe_view_page(request, username, recipe_id):
     author = get_object_or_404(User, username=username)
     recipe = get_object_or_404(Recipe, id=recipe_id, author_id=author.id)
     ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
+    favorites = get_favorites(request)
 
+    print(favorites)
     return render(request, 'recipe_view_page.html', {
         'author': author,
         'recipe': recipe,
         'ingredients': ingredients,
+        'favorites': favorites,
     })
 
 
