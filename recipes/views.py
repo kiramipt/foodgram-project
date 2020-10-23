@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Recipe, Tag
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.core.paginator import Paginator
-from .models import Recipe, IngredientAmount, Ingredient
 from django.contrib.auth.decorators import login_required
+from .models import Recipe, IngredientAmount, Ingredient, Tag
 from .forms import RecipeForm
 from .utils import get_ingredients, get_favorites
+from users.models import Purchases
+from django.db.models import F, Sum
 
 User = get_user_model()
 
@@ -26,11 +28,15 @@ def index(request):
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
+    favorites = get_favorites(request)
+    purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
 
     return render(request, 'index.html', {
         'page': page,
         'paginator': paginator,
         'tags': tags_all,
+        'favorites': favorites,
+        'purchases': purchases,
     })
 
 
@@ -98,7 +104,6 @@ def recipe_view_page(request, username, recipe_id):
     ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
     favorites = get_favorites(request)
 
-    print(favorites)
     return render(request, 'recipe_view_page.html', {
         'author': author,
         'recipe': recipe,
@@ -162,3 +167,35 @@ def recipe_add_page(request):
     else:
         form = RecipeForm(files=request.FILES or None)
     return render(request, 'recipe_add_page.html', context={'form': form})
+
+
+@login_required
+def purchases_page(request):
+    recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    return render(request, 'purchases_page.html', {'recipes': recipes})
+
+
+@login_required
+def purchases_download(request):
+
+    recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    ingredients = recipes.annotate(
+        name=F('ingredient__title'),
+        dimension=F('ingredient__unit')
+    ).values('name', 'dimension').annotate(total=Sum('ingredient_amount__amount')).order_by('name')
+    # print(len(ingredients))
+
+    res = ['name | dimension | total']
+    for ingredient in ingredients[1:]:
+        name = ingredient['name']
+        dimension = ingredient['dimension'].replace('\r', '')
+        total = ingredient['total']
+        # print([name, dimension, total])
+        res.append(f"{name} | {dimension} | {total}")
+
+    response = HttpResponse('\n'.join(res), content_type='text/txt')
+    response['Content-Disposition'] = 'attachment; filename="purchases.txt"'
+
+    return response
+
+

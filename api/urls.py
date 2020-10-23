@@ -8,6 +8,10 @@ urlpatterns = [
     path("api/favorites/", views.add_favorites, name='add_favorites'),
     path("api/favorites/<int:recipe_id>/", views.remove_favorites, name='remove_favorites'),
 
+    path("api/purchases/", views.add_purchase, name='add_purchase'),
+    path("api/purchases/<int:recipe_id>/", views.remove_purchase, name='remove_purchase'),
+
     path("<username>/<recipe_id>/remove/", views.recipe_remove, name="recipe_remove"),
+
 
 ]

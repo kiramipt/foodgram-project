@@ -17,3 +17,11 @@ class Follow(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_user")
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="favorite_recipe")
+
+
+class Purchases(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase_user')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='purchase_recipe')
+
+    class Meta:
+        unique_together = ('user', 'recipe',)

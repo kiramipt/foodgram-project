@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from recipes.models import Recipe, User
-from users.models import Follow, Favorite
+from users.models import Follow, Favorite, Purchases
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
@@ -21,7 +21,6 @@ def recipe_remove(request, username, recipe_id):
 @login_required
 @require_http_methods(["POST"])
 def add_subscription(request):
-    print('here')
     following = get_object_or_404(
         User,
         pk=json.loads(request.body)['id']
@@ -53,3 +52,17 @@ def remove_favorites(request, recipe_id):
     favorite_recipe.delete()
     return JsonResponse({'success': True})
 
+
+@login_required
+@require_http_methods(['POST'])
+def add_purchase(request):
+    recipe = get_object_or_404(Recipe, pk=json.loads(request.body).get('id'))
+    Purchases.objects.get_or_create(user=request.user, recipe=recipe)
+    return JsonResponse({'success': True})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def remove_purchase(request, recipe_id):
+    get_object_or_404(Purchases, user=request.user, recipe__pk=recipe_id).delete()
+    return JsonResponse({'success': True})

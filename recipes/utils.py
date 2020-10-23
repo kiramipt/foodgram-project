@@ -18,4 +18,5 @@ def get_favorites(request):
             user=request.user
         ).values_list('recipe_id', flat=True))
 
+    print(favorites_list)
     return favorites_list
