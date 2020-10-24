@@ -1,2 +1,3 @@
 # foodgram-project
-foodgram-project
+
+Пока не запускал на контейнере
