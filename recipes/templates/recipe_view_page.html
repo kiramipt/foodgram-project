@@ -59,10 +59,11 @@
             {% if user.is_authenticated %}
                 <ul class="single-card__items">
 
-                    {% if recipe.pk in shopping_list_recipes %}
-                        <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button></li>
+{#                    {% if recipe.pk in purchases %}#}
+                    {% if recipe in purchases %}
+                        <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button></li>
                     {% else %}
-                        <li class="single-card__item"><button class="button button_style_blue" name="purchpurchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+                        <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
                     {% endif %}
 
                     {% if request.user != recipe.author %}

@@ -121,13 +121,19 @@ def recipe_view_page(request, username, recipe_id):
     author = get_object_or_404(User, username=username)
     recipe = get_object_or_404(Recipe, id=recipe_id, author_id=author.id)
     ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
-    favorites = get_favorites(request)
+
+    if request.user.is_authenticated:
+        favorites = get_favorites(request)
+        purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    else:
+        favorites, purchases = [], []
 
     return render(request, 'recipe_view_page.html', {
         'author': author,
         'recipe': recipe,
         'ingredients': ingredients,
         'favorites': favorites,
+        'purchases': purchases,
     })
 
 

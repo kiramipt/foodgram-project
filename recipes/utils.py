@@ -32,7 +32,7 @@ def get_purchases_count(request):
 
 def get_followings(request):
     if request.user.is_authenticated:
-        print(request.user.follower.values_list('following_id', flat=True))
+        # print(request.user.follower.values_list('following_id', flat=True))
         return {'followings': request.user.follower.values_list('following_id', flat=True)}
     else:
         return {}
