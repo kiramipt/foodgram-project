@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    <title> Рецепты </title>
+    <title>Избранное</title>
 {% endblock %}
 
 {% load static %}
@@ -10,11 +10,11 @@
 {% endblock %}
 
 {% block content %}
-    <main class="main container">
+     <main class="main container">
 
         <div class="main__header">
-            <h1 class="main__title">Рецепты</h1>
-            {% include "tags.html" %}
+            <h1 class="main__title">Избранное</h1>
+            {% include 'tags.html' %}
         </div>
 
         <div class="card-list">
@@ -22,7 +22,6 @@
                 {% include "recipe_item.html" with recipe=recipe %}
             {% endfor %}
         </div>
-
 
         {% if page.has_other_pages %}
             {% include "paginator.html" with items=page paginator=paginator %}
@@ -39,9 +38,5 @@
     <script src="{% static 'js/components/CardList.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
     <script src="{% static 'js/api/Api.js' %}"></script>
-    {% if user.is_authenticated %}
-        <script src="{% static 'indexAuth.js' %}"></script>
-    {% else %}
-        <script src="{% static 'indexNotAuth.js' %}"></script>
-    {% endif %}
+    <script src="{% static 'favorite.js' %}"></script>
 {% endblock %}

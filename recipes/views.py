@@ -15,6 +15,8 @@ User = get_user_model()
 def index(request):
 
     tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
+    tags_all = Tag.objects.all()
+
     recipe_list = Recipe.objects.filter(
         tags__slug__in=tags_selected
     ).select_related(
@@ -23,13 +25,15 @@ def index(request):
         'tags'
     ).distinct()
 
-    tags_all = Tag.objects.all()
-
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    favorites = get_favorites(request)
-    purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+
+    if request.user.is_authenticated:
+        favorites = get_favorites(request)
+        purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    else:
+        favorites, purchases = [], []
 
     return render(request, 'index.html', {
         'page': page,
@@ -37,14 +41,14 @@ def index(request):
         'tags': tags_all,
         'favorites': favorites,
         'purchases': purchases,
+        'is_index_page': True,
     })
 
 
 @login_required
 def subscription(request):
     user = request.user
-    authors = User.objects.filter(
-        following__follower=user).prefetch_related("recipe_author")
+    authors = User.objects.filter(following__follower=user).prefetch_related("recipe_author")
 
     paginator = Paginator(authors, 6)
     page_number = request.GET.get("page")
@@ -52,48 +56,63 @@ def subscription(request):
 
     return render(request, 'subscription.html', {
         'page': page,
-        'paginator': paginator
+        'paginator': paginator,
+        'is_subscription_page': True,
     })
 
 
 @login_required
 def favorites(request):
-    user = request.user
-    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
 
-    recipes = Recipe.objects.filter(
-        favorite_recipe__user=user
+    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
+    tags_all = Tag.objects.all()
+
+    recipe_list = Recipe.objects.filter(
+        favorite_recipe__user=request.user
     ).all()
 
-    paginator = Paginator(recipes, 6)
+    paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
-    tags_all = Tag.objects.all()
+    favorites = get_favorites(request)
+    purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
 
     return render(request, 'favorites.html', {
         'page': page,
         'paginator': paginator,
-        'tags': tags_all
+        'tags': tags_all,
+        'favorites': favorites,
+        'purchases': purchases,
+        'is_favorites_page': True,
     })
 
 
 def user_recipe_view_page(request, username):
-    author = get_object_or_404(User, username=username)
+
     tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
+    tags_all = Tag.objects.all()
+
+    author = get_object_or_404(User, username=username)
     recipes = Recipe.objects.filter(author_id=author.id)
 
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
-    tags_all = Tag.objects.all()
+    if request.user.is_authenticated:
+        favorites = get_favorites(request)
+        purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    else:
+        favorites, purchases = [], []
 
     return render(request, 'user_recipe_view_page.html', {
         'page': page,
         'paginator': paginator,
         'author': author,
         'tags': tags_all,
+        'favorites': favorites,
+        'purchases': purchases,
     })
 
 
@@ -166,13 +185,13 @@ def recipe_add_page(request):
             return redirect('recipe_view_page', username=request.user, recipe_id=recipe.id)
     else:
         form = RecipeForm(files=request.FILES or None)
-    return render(request, 'recipe_add_page.html', context={'form': form})
+    return render(request, 'recipe_add_page.html', context={'form': form, 'is_recipe_new_page': True})
 
 
 @login_required
 def purchases_page(request):
     recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
-    return render(request, 'purchases_page.html', {'recipes': recipes})
+    return render(request, 'purchases_page.html', {'recipes': recipes, 'is_purchases_page': True})
 
 
 @login_required
@@ -183,14 +202,12 @@ def purchases_download(request):
         name=F('ingredient__title'),
         dimension=F('ingredient__unit')
     ).values('name', 'dimension').annotate(total=Sum('ingredient_amount__amount')).order_by('name')
-    # print(len(ingredients))
 
     res = ['name | dimension | total']
     for ingredient in ingredients[1:]:
         name = ingredient['name']
         dimension = ingredient['dimension'].replace('\r', '')
         total = ingredient['total']
-        # print([name, dimension, total])
         res.append(f"{name} | {dimension} | {total}")
 
     response = HttpResponse('\n'.join(res), content_type='text/txt')

@@ -1,4 +1,5 @@
 from users.models import Favorite
+from .models import Recipe
 
 
 def get_ingredients(request):
@@ -18,5 +19,20 @@ def get_favorites(request):
             user=request.user
         ).values_list('recipe_id', flat=True))
 
-    print(favorites_list)
     return favorites_list
+
+
+def get_purchases_count(request):
+    purchases_count = 0
+    if request.user.is_authenticated:
+        purchases_count = Recipe.objects.filter(purchase_recipe__user=request.user).count()
+
+    return {'purchases_count': purchases_count}
+
+
+def get_followings(request):
+    if request.user.is_authenticated:
+        print(request.user.follower.values_list('following_id', flat=True))
+        return {'followings': request.user.follower.values_list('following_id', flat=True)}
+    else:
+        return {}
