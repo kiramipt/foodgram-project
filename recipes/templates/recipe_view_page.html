@@ -10,16 +10,17 @@
 {% endblock %}
 
 {% block content %}
+    <main class="main container">
 
-    {% csrf_token %}
-    <div class="single-card" data-id="{{ recipe.pk }}" data-author="{{ author.id }}">
+        {% csrf_token %}
+        <div class="single-card" data-id="{{ recipe.pk }}" data-author="{{ author.id }}">
 
-        {% load thumbnail %}
-            {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
-            <img src="{{ im.url }}" alt="{{ recipe.title }}" class="single-card__image" width="480" height="480">
-        {% endthumbnail %}
+            {% load thumbnail %}
+                {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
+                <img src="{{ im.url }}" alt="{{ recipe.title }}" class="single-card__image" width="480" height="480">
+            {% endthumbnail %}
 
-        <div class="single-card__info">
+            <div class="single-card__info">
 
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.title }}</h1>
@@ -59,7 +60,6 @@
             {% if user.is_authenticated %}
                 <ul class="single-card__items">
 
-{#                    {% if recipe.pk in purchases %}#}
                     {% if recipe in purchases %}
                         <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button></li>
                     {% else %}
@@ -93,7 +93,9 @@
 
         </div>
 
-    </div>
+        </div>
+
+    </main>
 {% endblock %}
 
 {% block js %}

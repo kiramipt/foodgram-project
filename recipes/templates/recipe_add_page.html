@@ -10,12 +10,13 @@
 {% endblock %}
 
 {% block content %}
+    <main class="main container">
 
-    <div class="main__header">
-        <h1 class="main__title">Создание рецепта</h1>
-    </div>
+        <div class="main__header">
+            <h1 class="main__title">Создание рецепта</h1>
+        </div>
 
-    <div class="form-container">
+        <div class="form-container">
 
         <form class="form" method="post" enctype="multipart/form-data" id="main-form">
             {% csrf_token %}
@@ -120,7 +121,7 @@
         </form>
 
     </div>
-
+    </main>
 {% endblock %}
 
 {% block js %}
