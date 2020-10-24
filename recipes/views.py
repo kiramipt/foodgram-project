@@ -14,16 +14,18 @@ User = get_user_model()
 
 def index(request):
 
-    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
-    tags_all = Tag.objects.all()
+    tags = request.GET.get("tags", "")
 
-    recipe_list = Recipe.objects.filter(
-        tags__slug__in=tags_selected
-    ).select_related(
-        'author'
-    ).prefetch_related(
-        'tags'
-    ).distinct()
+    if tags:
+        recipe_list = Recipe.objects.filter(
+            tags__slug__in=tags.split(',')
+        ).select_related(
+            'author'
+        ).prefetch_related(
+            'tags'
+        ).distinct()
+    else:
+        recipe_list = Recipe.objects.all()
 
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')
@@ -38,7 +40,7 @@ def index(request):
     return render(request, 'index.html', {
         'page': page,
         'paginator': paginator,
-        'tags': tags_all,
+        'tags': tags,
         'favorites': favorites,
         'purchases': purchases,
         'is_index_page': True,
@@ -64,12 +66,18 @@ def subscription(request):
 @login_required
 def favorites(request):
 
-    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
-    tags_all = Tag.objects.all()
+    tags = request.GET.get("tags", "")
 
-    recipe_list = Recipe.objects.filter(
-        favorite_recipe__user=request.user
-    ).all()
+    if tags:
+        recipe_list = Recipe.objects.filter(
+            favorite_recipe__user=request.user
+        ).filter(
+            tags__slug__in=tags.split(',')
+        ).distinct()
+    else:
+        recipe_list = Recipe.objects.filter(
+            favorite_recipe__user=request.user
+        ).all()
 
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get("page")
@@ -81,7 +89,7 @@ def favorites(request):
     return render(request, 'favorites.html', {
         'page': page,
         'paginator': paginator,
-        'tags': tags_all,
+        'tags': tags,
         'favorites': favorites,
         'purchases': purchases,
         'is_favorites_page': True,
@@ -90,13 +98,20 @@ def favorites(request):
 
 def user_recipe_view_page(request, username):
 
-    tags_selected = request.GET.getlist('filters', default=['breakfast', 'lunch', 'dinner'])
-    tags_all = Tag.objects.all()
+    tags = request.GET.get("tags", "")
 
     author = get_object_or_404(User, username=username)
-    recipes = Recipe.objects.filter(author_id=author.id)
 
-    paginator = Paginator(recipes, 6)
+    if tags:
+        recipe_list = Recipe.objects.filter(
+            author_id=author.id
+        ).filter(
+            tags__slug__in=tags.split(',')
+        ).distinct()
+    else:
+        recipe_list = Recipe.objects.filter(author_id=author.id).all()
+
+    paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
@@ -110,7 +125,7 @@ def user_recipe_view_page(request, username):
         'page': page,
         'paginator': paginator,
         'author': author,
-        'tags': tags_all,
+        'tags': tags,
         'favorites': favorites,
         'purchases': purchases,
     })
