@@ -32,7 +32,8 @@ def add_subscription(request):
 @login_required
 @require_http_methods(["DELETE"])
 def remove_subscription(request, author_id):
-    subscription = get_object_or_404(Follow, follower=request.user, following__pk=author_id)
+    subscription = get_object_or_404(
+        Follow, follower=request.user, following__pk=author_id)
     subscription.delete()
     return JsonResponse({'success': True})
 
@@ -48,7 +49,8 @@ def add_favorites(request):
 @login_required
 @require_http_methods(["DELETE"])
 def remove_favorites(request, recipe_id):
-    favorite_recipe = get_object_or_404(Favorite, user=request.user, recipe__pk=recipe_id)
+    favorite_recipe = get_object_or_404(
+        Favorite, user=request.user, recipe__pk=recipe_id)
     favorite_recipe.delete()
     return JsonResponse({'success': True})
 
@@ -64,5 +66,6 @@ def add_purchase(request):
 @login_required
 @require_http_methods(["DELETE"])
 def remove_purchase(request, recipe_id):
-    get_object_or_404(Purchases, user=request.user, recipe__pk=recipe_id).delete()
+    get_object_or_404(Purchases, user=request.user,
+                      recipe__pk=recipe_id).delete()
     return JsonResponse({'success': True})

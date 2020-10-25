@@ -13,7 +13,8 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ("pk", "author", "title", "image", "description", "cooking_time", "pub_date")
+    list_display = ("pk", "author", "title", "image", "description",
+                    "cooking_time", "pub_date")
     list_filter = ("title",)
     search_fields = ("title",)
 
@@ -26,4 +27,3 @@ admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(IngredientAmount, IngredientAmountAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
-

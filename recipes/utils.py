@@ -7,7 +7,8 @@ def get_ingredients(request):
     for key in request.POST:
         if key.startswith('nameIngredient'):
             value_ingredient = key[15:]
-            ingredients[request.POST[key]] = request.POST['valueIngredient_' + value_ingredient]
+            ingredients[request.POST[key]] = request.POST[
+                'valueIngredient_' + value_ingredient]
     return ingredients
 
 
@@ -25,13 +26,17 @@ def get_favorites(request):
 def get_purchases_count(request):
     purchases_count = 0
     if request.user.is_authenticated:
-        purchases_count = Recipe.objects.filter(purchase_recipe__user=request.user).count()
+        purchases_count = Recipe.objects.filter(
+            purchase_recipe__user=request.user
+        ).count()
 
     return {'purchases_count': purchases_count}
 
 
 def get_followings(request):
     if request.user.is_authenticated:
-        return {'followings': request.user.follower.values_list('following_id', flat=True)}
+        return {'followings': request.user.follower.values_list(
+            'following_id', flat=True
+        )}
     else:
         return {}

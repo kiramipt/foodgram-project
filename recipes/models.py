@@ -15,7 +15,8 @@ class Ingredient(models.Model):
 class IngredientAmount(models.Model):
     amount = models.IntegerField()
     ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, related_name='ingredient_amount')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE,
+                               related_name='ingredient_amount')
 
 
 class Tag(models.Model):
