@@ -14,14 +14,14 @@ def get_ingredients(request):
 
 
 def get_favorites(request):
-    favorites_list = []
+    favorites = []
     if request.user.is_authenticated:
 
-        favorites_list = list(Favorite.objects.filter(
+        favorites = list(Favorite.objects.filter(
             user=request.user
         ).values_list("recipe_id", flat=True))
 
-    return favorites_list
+    return favorites
 
 
 def get_purchases_count(request):

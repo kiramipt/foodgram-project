@@ -17,7 +17,7 @@ def index(request):
     tags = request.GET.get("tags", "")
 
     if tags:
-        recipe_list = Recipe.objects.filter(
+        recipes = Recipe.objects.filter(
             tags__slug__in=tags.split(",")
         ).select_related(
             "author"
@@ -25,16 +25,16 @@ def index(request):
             "tags"
         ).distinct()
     else:
-        recipe_list = Recipe.objects.all()
+        recipes = Recipe.objects.all()
 
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
     if request.user.is_authenticated:
         favorites = get_favorites(request)
         purchases = Recipe.objects.filter(
-            purchase_recipe__user=request.user).all()
+            purchase_recipe__user=request.user)
     else:
         favorites, purchases = [], []
 
@@ -71,22 +71,22 @@ def favorites(request):
     tags = request.GET.get("tags", "")
 
     if tags:
-        recipe_list = Recipe.objects.filter(
+        recipes = Recipe.objects.filter(
             favorite_recipe__user=request.user
         ).filter(
             tags__slug__in=tags.split(",")
         ).distinct()
     else:
-        recipe_list = Recipe.objects.filter(
+        recipes = Recipe.objects.filter(
             favorite_recipe__user=request.user
-        ).all()
+        )
 
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
     favorites = get_favorites(request)
-    purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    purchases = Recipe.objects.filter(purchase_recipe__user=request.user)
 
     return render(request, "favorites.html", {
         "page": page,
@@ -101,26 +101,25 @@ def favorites(request):
 def user_recipe_view_page(request, username):
 
     tags = request.GET.get("tags", "")
-
     author = get_object_or_404(User, username=username)
 
     if tags:
-        recipe_list = Recipe.objects.filter(
+        recipes = Recipe.objects.filter(
             author_id=author.id
         ).filter(
             tags__slug__in=tags.split(",")
         ).distinct()
     else:
-        recipe_list = Recipe.objects.filter(author_id=author.id).all()
+        recipes = Recipe.objects.filter(author_id=author.id)
 
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
     if request.user.is_authenticated:
         favorites = get_favorites(request)
         purchases = Recipe.objects.filter(
-            purchase_recipe__user=request.user).all()
+            purchase_recipe__user=request.user)
     else:
         favorites, purchases = [], []
 
@@ -136,14 +135,14 @@ def user_recipe_view_page(request, username):
 
 def recipe_view_page(request, username, recipe_id):
 
-    author = get_object_or_404(User, username=username)
-    recipe = get_object_or_404(Recipe, id=recipe_id, author_id=author.id)
+    recipe = get_object_or_404(Recipe, id=recipe_id, author__username=username)
     ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
+    author = get_object_or_404(User, username=username)
 
     if request.user.is_authenticated:
         favorites = get_favorites(request)
         purchases = Recipe.objects.filter(
-            purchase_recipe__user=request.user).all()
+            purchase_recipe__user=request.user)
     else:
         favorites, purchases = [], []
 
@@ -220,7 +219,7 @@ def recipe_add_page(request):
 
 @login_required
 def purchases_page(request):
-    recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    recipes = Recipe.objects.filter(purchase_recipe__user=request.user)
     return render(request, "purchases_page.html",
                   {"recipes": recipes, "is_purchases_page": True})
 
@@ -228,7 +227,7 @@ def purchases_page(request):
 @login_required
 def purchases_download(request):
 
-    recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
+    recipes = Recipe.objects.filter(purchase_recipe__user=request.user)
     ingredients = recipes.annotate(
         name=F("ingredient__title"),
         dimension=F("ingredient__unit")
