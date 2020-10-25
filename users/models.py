@@ -13,7 +13,7 @@ class Follow(models.Model):
         User, on_delete=models.CASCADE, related_name="following")
 
     class Meta:
-        unique_together = ('follower', 'following')
+        unique_together = ("follower", "following")
 
 
 class Favorite(models.Model):
@@ -25,9 +25,9 @@ class Favorite(models.Model):
 
 class Purchases(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='purchase_user')
+        User, on_delete=models.CASCADE, related_name="purchase_user")
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='purchase_recipe')
+        Recipe, on_delete=models.CASCADE, related_name="purchase_recipe")
 
     class Meta:
-        unique_together = ('user', 'recipe',)
+        unique_together = ("user", "recipe",)

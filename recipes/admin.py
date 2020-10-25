@@ -10,7 +10,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ("pk", 'title', 'slug', 'color')
+    list_display = ("pk", "title", "slug", "color")
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -21,7 +21,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAmountAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'amount', 'ingredient', 'recipe')
+    list_display = ("pk", "amount", "ingredient", "recipe")
 
 
 admin.site.register(Ingredient, IngredientAdmin)

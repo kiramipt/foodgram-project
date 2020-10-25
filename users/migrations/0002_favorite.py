@@ -9,17 +9,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('recipes', '0004_auto_20201020_2243'),
-        ('users', '0001_initial'),
+        ("recipes", "0004_auto_20201020_2243"),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Favorite',
+            name="Favorite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorite_recipe', to='recipes.recipe')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorite_user', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("recipe", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                             related_name="favorite_recipe", to="recipes.recipe")),
+                ("user", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           related_name="favorite_user", to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

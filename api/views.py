@@ -23,10 +23,10 @@ def recipe_remove(request, username, recipe_id):
 def add_subscription(request):
     following = get_object_or_404(
         User,
-        pk=json.loads(request.body)['id']
+        pk=json.loads(request.body)["id"]
     )
     Follow.objects.get_or_create(follower=request.user, following=following)
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})
 
 
 @login_required
@@ -35,15 +35,15 @@ def remove_subscription(request, author_id):
     subscription = get_object_or_404(
         Follow, follower=request.user, following__pk=author_id)
     subscription.delete()
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})
 
 
 @login_required
-@require_http_methods(['POST'])
+@require_http_methods(["POST"])
 def add_favorites(request):
-    recipe = get_object_or_404(Recipe, pk=json.loads(request.body)['id'])
+    recipe = get_object_or_404(Recipe, pk=json.loads(request.body)["id"])
     Favorite.objects.get_or_create(user=request.user, recipe=recipe)
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})
 
 
 @login_required
@@ -52,15 +52,15 @@ def remove_favorites(request, recipe_id):
     favorite_recipe = get_object_or_404(
         Favorite, user=request.user, recipe__pk=recipe_id)
     favorite_recipe.delete()
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})
 
 
 @login_required
-@require_http_methods(['POST'])
+@require_http_methods(["POST"])
 def add_purchase(request):
-    recipe = get_object_or_404(Recipe, pk=json.loads(request.body).get('id'))
+    recipe = get_object_or_404(Recipe, pk=json.loads(request.body).get("id"))
     Purchases.objects.get_or_create(user=request.user, recipe=recipe)
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})
 
 
 @login_required
@@ -68,4 +68,4 @@ def add_purchase(request):
 def remove_purchase(request, recipe_id):
     get_object_or_404(Purchases, user=request.user,
                       recipe__pk=recipe_id).delete()
-    return JsonResponse({'success': True})
+    return JsonResponse({"success": True})

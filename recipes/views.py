@@ -18,17 +18,17 @@ def index(request):
 
     if tags:
         recipe_list = Recipe.objects.filter(
-            tags__slug__in=tags.split(',')
+            tags__slug__in=tags.split(",")
         ).select_related(
-            'author'
+            "author"
         ).prefetch_related(
-            'tags'
+            "tags"
         ).distinct()
     else:
         recipe_list = Recipe.objects.all()
 
     paginator = Paginator(recipe_list, 6)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
     if request.user.is_authenticated:
@@ -38,13 +38,13 @@ def index(request):
     else:
         favorites, purchases = [], []
 
-    return render(request, 'index.html', {
-        'page': page,
-        'paginator': paginator,
-        'tags': tags,
-        'favorites': favorites,
-        'purchases': purchases,
-        'is_index_page': True,
+    return render(request, "index.html", {
+        "page": page,
+        "paginator": paginator,
+        "tags": tags,
+        "favorites": favorites,
+        "purchases": purchases,
+        "is_index_page": True,
     })
 
 
@@ -58,10 +58,10 @@ def subscription(request):
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
 
-    return render(request, 'subscription.html', {
-        'page': page,
-        'paginator': paginator,
-        'is_subscription_page': True,
+    return render(request, "subscription.html", {
+        "page": page,
+        "paginator": paginator,
+        "is_subscription_page": True,
     })
 
 
@@ -74,7 +74,7 @@ def favorites(request):
         recipe_list = Recipe.objects.filter(
             favorite_recipe__user=request.user
         ).filter(
-            tags__slug__in=tags.split(',')
+            tags__slug__in=tags.split(",")
         ).distinct()
     else:
         recipe_list = Recipe.objects.filter(
@@ -88,13 +88,13 @@ def favorites(request):
     favorites = get_favorites(request)
     purchases = Recipe.objects.filter(purchase_recipe__user=request.user).all()
 
-    return render(request, 'favorites.html', {
-        'page': page,
-        'paginator': paginator,
-        'tags': tags,
-        'favorites': favorites,
-        'purchases': purchases,
-        'is_favorites_page': True,
+    return render(request, "favorites.html", {
+        "page": page,
+        "paginator": paginator,
+        "tags": tags,
+        "favorites": favorites,
+        "purchases": purchases,
+        "is_favorites_page": True,
     })
 
 
@@ -108,7 +108,7 @@ def user_recipe_view_page(request, username):
         recipe_list = Recipe.objects.filter(
             author_id=author.id
         ).filter(
-            tags__slug__in=tags.split(',')
+            tags__slug__in=tags.split(",")
         ).distinct()
     else:
         recipe_list = Recipe.objects.filter(author_id=author.id).all()
@@ -124,13 +124,13 @@ def user_recipe_view_page(request, username):
     else:
         favorites, purchases = [], []
 
-    return render(request, 'user_recipe_view_page.html', {
-        'page': page,
-        'paginator': paginator,
-        'author': author,
-        'tags': tags,
-        'favorites': favorites,
-        'purchases': purchases,
+    return render(request, "user_recipe_view_page.html", {
+        "page": page,
+        "paginator": paginator,
+        "author": author,
+        "tags": tags,
+        "favorites": favorites,
+        "purchases": purchases,
     })
 
 
@@ -147,12 +147,12 @@ def recipe_view_page(request, username, recipe_id):
     else:
         favorites, purchases = [], []
 
-    return render(request, 'recipe_view_page.html', {
-        'author': author,
-        'recipe': recipe,
-        'ingredients': ingredients,
-        'favorites': favorites,
-        'purchases': purchases,
+    return render(request, "recipe_view_page.html", {
+        "author": author,
+        "recipe": recipe,
+        "ingredients": ingredients,
+        "favorites": favorites,
+        "purchases": purchases,
     })
 
 
@@ -162,10 +162,10 @@ def recipe_edit_page(request, username, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     if request.user != recipe.author or username != request.user.username:
-        return redirect('recipe_view_page',
+        return redirect("recipe_view_page",
                         username=recipe.author, recipe_id=recipe.pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RecipeForm(request.POST or None,
                           request.FILES or None, instance=recipe)
 
@@ -179,20 +179,20 @@ def recipe_edit_page(request, username, recipe_id):
                     amount=amount, ingredient=ingredient, recipe=recipe)
                 ingredient_amount.save()
 
-            return redirect('recipe_view_page',
+            return redirect("recipe_view_page",
                             username=recipe.author, recipe_id=recipe.pk)
 
     form = RecipeForm(instance=recipe)
     ingredients = IngredientAmount.objects.filter(recipe_id=recipe_id)
 
-    return render(request, 'recipe_edit_page.html',
-                  {'form': form, 'recipe': recipe, 'ingredients': ingredients})
+    return render(request, "recipe_edit_page.html",
+                  {"form": form, "recipe": recipe, "ingredients": ingredients})
 
 
 @login_required
 def recipe_add_page(request):
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RecipeForm(request.POST or None, files=request.FILES or None)
         ingredients = get_ingredients(request)
 
@@ -210,19 +210,19 @@ def recipe_add_page(request):
 
             IngredientAmount.objects.bulk_create(ingredient_amounts)
             form.save_m2m()
-            return redirect('recipe_view_page',
+            return redirect("recipe_view_page",
                             username=request.user, recipe_id=recipe.id)
     else:
         form = RecipeForm(files=request.FILES or None)
-    return render(request, 'recipe_add_page.html',
-                  context={'form': form, 'is_recipe_new_page': True})
+    return render(request, "recipe_add_page.html",
+                  context={"form": form, "is_recipe_new_page": True})
 
 
 @login_required
 def purchases_page(request):
     recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
-    return render(request, 'purchases_page.html',
-                  {'recipes': recipes, 'is_purchases_page': True})
+    return render(request, "purchases_page.html",
+                  {"recipes": recipes, "is_purchases_page": True})
 
 
 @login_required
@@ -230,19 +230,19 @@ def purchases_download(request):
 
     recipes = Recipe.objects.filter(purchase_recipe__user=request.user).all()
     ingredients = recipes.annotate(
-        name=F('ingredient__title'),
-        dimension=F('ingredient__unit')
-    ).values('name', 'dimension').annotate(
-        total=Sum('ingredient_amount__amount')).order_by('name')
+        name=F("ingredient__title"),
+        dimension=F("ingredient__unit")
+    ).values("name", "dimension").annotate(
+        total=Sum("ingredient_amount__amount")).order_by("name")
 
-    res = ['name | dimension | total']
+    res = ["name | dimension | total"]
     for ingredient in ingredients[1:]:
-        name = ingredient['name']
-        dimension = ingredient['dimension'].replace('\r', '')
-        total = ingredient['total']
+        name = ingredient["name"]
+        dimension = ingredient["dimension"].replace("\r", "")
+        total = ingredient["total"]
         res.append(f"{name} | {dimension} | {total}")
 
-    response = HttpResponse('\n'.join(res), content_type='text/txt')
-    response['Content-Disposition'] = 'attachment; filename="purchases.txt"'
+    response = HttpResponse("\n".join(res), content_type="text/txt")
+    response["Content-Disposition"] = "attachment; filename='purchases.txt'"
 
     return response

@@ -14,16 +14,16 @@ class Ingredient(models.Model):
 
 class IngredientAmount(models.Model):
     amount = models.IntegerField()
-    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE,
-                               related_name='ingredient_amount')
+    ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
+    recipe = models.ForeignKey("Recipe", on_delete=models.CASCADE,
+                               related_name="ingredient_amount")
 
 
 class Tag(models.Model):
     choices = (
-        ('breakfast', 'Завтрак'),
-        ('lunch', 'Обед'),
-        ('dinner', 'Ужин')
+        ("breakfast", "Завтрак"),
+        ("lunch", "Обед"),
+        ("dinner", "Ужин")
     )
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
@@ -35,20 +35,20 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='recipe_author'
+        User, on_delete=models.CASCADE, related_name="recipe_author"
     )
     title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='image/')
+    image = models.ImageField(upload_to="image/")
     description = models.TextField()
     ingredient = models.ManyToManyField(
         Ingredient, through=IngredientAmount
     )
-    tags = models.ManyToManyField(Tag, related_name='recipes')
+    tags = models.ManyToManyField(Tag, related_name="recipes")
     cooking_time = models.IntegerField(default=10)
-    pub_date = models.DateTimeField('date published', auto_now_add=True)
+    pub_date = models.DateTimeField("date published", auto_now_add=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ('-pub_date', )
+        ordering = ("-pub_date", )

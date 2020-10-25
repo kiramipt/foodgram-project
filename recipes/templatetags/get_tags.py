@@ -11,5 +11,4 @@ def get_tags(request, tag):
         tags.append(tag)
     else:
         tags.remove(tag)
-    # print(tags)
     return ",".join(tags)
