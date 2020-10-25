@@ -165,8 +165,7 @@ def recipe_edit_page(request, username, recipe_id):
                         username=recipe.author, recipe_id=recipe.pk)
 
     if request.method == "POST":
-        form = RecipeForm(request.POST or None,
-                          request.FILES or None, instance=recipe)
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)
 
         if form.is_valid():
             form.save()
@@ -192,7 +191,7 @@ def recipe_edit_page(request, username, recipe_id):
 def recipe_add_page(request):
 
     if request.method == "POST":
-        form = RecipeForm(request.POST or None, files=request.FILES or None)
+        form = RecipeForm(request.POST, files=request.FILES)
         ingredients = get_ingredients(request)
 
         if not bool(ingredients):
@@ -203,16 +202,20 @@ def recipe_add_page(request):
             recipe.author = request.user
             recipe.save()
 
-            ingredient_amounts = [IngredientAmount(
-                amount=amount, ingredient=Ingredient.objects.get(title=title),
-                recipe=recipe) for title, amount in ingredients.items()]
+            ingredient_amounts = [
+                IngredientAmount(
+                    amount=amount,
+                    ingredient=get_object_or_404(Ingredient, title=title),
+                    recipe=recipe
+                ) for title, amount in ingredients.items()
+            ]
 
             IngredientAmount.objects.bulk_create(ingredient_amounts)
             form.save_m2m()
             return redirect("recipe_view_page",
                             username=request.user, recipe_id=recipe.id)
     else:
-        form = RecipeForm(files=request.FILES or None)
+        form = RecipeForm()
     return render(request, "recipe_add_page.html",
                   context={"form": form, "is_recipe_new_page": True})
 

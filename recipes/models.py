@@ -20,11 +20,6 @@ class IngredientAmount(models.Model):
 
 
 class Tag(models.Model):
-    choices = (
-        ("breakfast", "Завтрак"),
-        ("lunch", "Обед"),
-        ("dinner", "Ужин")
-    )
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     color = models.CharField(max_length=255)

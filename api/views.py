@@ -11,8 +11,9 @@ from users.models import Favorite, Follow, Purchases
 
 @login_required
 def recipe_remove(request, username, recipe_id):
-    if request.user.username == username:
-        Recipe.objects.filter(id=recipe_id).delete()
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.user == recipe.author and request.user.username == username:
+        recipe.delete()
         return redirect("user_recipe_view_page", username)
     else:
         return redirect("recipe_view_page", username, recipe_id)
