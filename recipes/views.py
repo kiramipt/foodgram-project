@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import Recipe, IngredientAmount, Ingredient
-from .forms import RecipeForm
-from .utils import get_ingredients, get_favorites
+from django.core.paginator import Paginator
 from django.db.models import F, Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import RecipeForm
+from .models import Ingredient, IngredientAmount, Recipe
+from .utils import get_favorites, get_ingredients
 
 User = get_user_model()
 

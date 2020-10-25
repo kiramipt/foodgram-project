@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Follow, Favorite, Purchases
+
+from .models import Favorite, Follow, Purchases
 
 
 class FollowAdmin(admin.ModelAdmin):
