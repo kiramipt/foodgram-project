@@ -29,7 +29,7 @@
 
                     <div class="card-user__body">
                         <ul class="card-user__items">
-                            {% for recipe in user.recipe_author.all|slice:'3' %}
+                            {% for recipe in user.recipes.all|slice:'3' %}
                                 <li class="card-user__item">
                                 <div class="recipe">
                                     <img src="{{ recipe.image.url }}" alt="какой-то-текст" class="recipe__image">
@@ -39,9 +39,9 @@
                                 </li>
                             {% endfor %}
 
-                            {% if user.recipe_author.count > 3 %}
+                            {% if user.recipes.count > 3 %}
                                 <li class="card-user__item">
-                                    <a href="{% url 'user_recipe_view_page' user.username %}" class="card-user__link link">Еще {{ user.recipe_author.count|add:'-3' }} рецептов...</a>
+                                    <a href="{% url 'user_recipe_view_page' user.username %}" class="card-user__link link">Еще {{ user.recipes.count|add:'-3' }} рецептов...</a>
                                 </li>
                             {% endif %}
                         </ul>

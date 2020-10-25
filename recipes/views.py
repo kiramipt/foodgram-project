@@ -52,7 +52,7 @@ def index(request):
 def subscription(request):
     user = request.user
     authors = User.objects.filter(
-        following__follower=user).prefetch_related("recipe_author")
+        following__follower=user).prefetch_related("recipes")
 
     paginator = Paginator(authors, 6)
     page_number = request.GET.get("page")
@@ -166,17 +166,22 @@ def recipe_edit_page(request, username, recipe_id):
 
     if request.method == "POST":
         form = RecipeForm(request.POST, request.FILES, instance=recipe)
+        ingredients = get_ingredients(request)
 
-        if form.is_valid():
+        if not bool(ingredients):
+            form.add_error(None, "Добавьте хотя бы один ингредиент")
+
+        elif form.is_valid():
             form.save()
-            recipe.ingredient_amount.all().delete()
-            ingredients = get_ingredients(request)
-            for title, amount in ingredients.items():
-                ingredient = get_object_or_404(Ingredient, title=title)
-                ingredient_amount = IngredientAmount(
-                    amount=amount, ingredient=ingredient, recipe=recipe)
-                ingredient_amount.save()
-
+            recipe.ingredientamount_set.all().delete()
+            ingredient_amounts = [
+                IngredientAmount(
+                    amount=amount,
+                    ingredient=get_object_or_404(Ingredient, title=title),
+                    recipe=recipe
+                ) for title, amount in ingredients.items()
+            ]
+            IngredientAmount.objects.bulk_create(ingredient_amounts)
             return redirect("recipe_view_page",
                             username=recipe.author, recipe_id=recipe.pk)
 
@@ -235,7 +240,7 @@ def purchases_download(request):
         name=F("ingredient__title"),
         dimension=F("ingredient__unit")
     ).values("name", "dimension").annotate(
-        total=Sum("ingredient_amount__amount")).order_by("name")
+        total=Sum("ingredientamount__amount")).order_by("name")
 
     res = ["name | dimension | total"]
     for ingredient in ingredients[1:]:
