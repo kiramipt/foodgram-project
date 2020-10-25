@@ -38,8 +38,10 @@ class Recipe(models.Model):
         Ingredient, through=IngredientAmount
     )
     tags = models.ManyToManyField(Tag, related_name="recipes")
-    cooking_time = models.IntegerField(default=10, verbose_name="Время приготовления")
-    pub_date = models.DateTimeField("date published", auto_now_add=True, db_index=True)
+    cooking_time = models.IntegerField(
+        default=10, verbose_name="Время приготовления")
+    pub_date = models.DateTimeField(
+        "date published", auto_now_add=True, db_index=True)
 
     def __str__(self):
         return self.title

@@ -15,10 +15,10 @@ urlpatterns = [
          name="purchases_page"),
     path("purchases/download/", views.purchases_download,
          name="purchases_download"),
-    path("<username>/", views.user_recipe_view_page,
+    path("<str:username>/", views.user_recipe_view_page,
          name="user_recipe_view_page"),
-    path("<username>/<int:recipe_id>/", views.recipe_view_page,
+    path("<str:username>/<int:recipe_id>/", views.recipe_view_page,
          name="recipe_view_page"),
-    path("<username>/<int:recipe_id>/edit/", views.recipe_edit_page,
+    path("<str:username>/<int:recipe_id>/edit/", views.recipe_edit_page,
          name="recipe_edit_page"),
 ]

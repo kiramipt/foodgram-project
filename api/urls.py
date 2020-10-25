@@ -15,6 +15,6 @@ urlpatterns = [
          name="add_purchase"),
     path("api/purchases/<int:recipe_id>/", views.remove_purchase,
          name="remove_purchase"),
-    path("<username>/<recipe_id>/remove/", views.recipe_remove,
+    path("<str:username>/<int:recipe_id>/remove/", views.recipe_remove,
          name="recipe_remove"),
 ]

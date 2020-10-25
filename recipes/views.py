@@ -52,7 +52,7 @@ def index(request):
 def subscription(request):
     user = request.user
     authors = User.objects.filter(
-        following__follower=user).prefetch_related("recipes")
+        following__follower=user).prefetch_related("recipes").order_by('-id')
 
     paginator = Paginator(authors, 6)
     page_number = request.GET.get("page")
