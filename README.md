@@ -1,9 +1,26 @@
+![workflow name](https://github.com/kiramipt/foodgram-project/workflows/foodgram_project_workflow/badge.svg)
+
 # foodgram-project
 
-Пока не запускал на контейнере
+## To run service:
+1. Clone repository
+2. Create .env file with credentials using .env.example template
+3. Execute command:
+```bash
+docker-compose up --build
+```
+## Tech Stack
+- Django
+- Python
+- PostgreSQL
+- Docker-compose
+- Javascript
+- Nginx
 
+## Site url
+http://130.193.45.147/
 
-Some useful hints:
+## Some useful hints:
 ```
 # dump data to fixtures.json
 python manage.py dumpdata --exclude=contenttypes > fixtures.json
