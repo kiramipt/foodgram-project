@@ -18,7 +18,9 @@ docker-compose up --build
 - Nginx
 
 ## Site url
-http://130.193.46.107/
+http://kiramipt-ods.ru:8000/
+user: test_user password: aqswdefr
+
 
 ## Some useful hints:
 ```
