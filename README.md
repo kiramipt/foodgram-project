@@ -18,7 +18,7 @@ docker-compose up --build
 - Nginx
 
 ## Site url
-http://130.193.45.147/
+http://130.193.46.107/
 
 ## Some useful hints:
 ```
